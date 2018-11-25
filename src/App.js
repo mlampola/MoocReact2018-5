@@ -1,6 +1,6 @@
 import React from 'react'
 import LoginForm from './components/LoginForm'
-import BlogForm from './components/BlogForm'
+import BlogList from './components/BlogList'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -24,6 +24,8 @@ class App extends React.Component {
         password: this.state.password
       })
 
+      window.localStorage.setItem('loggedInBlogUser', JSON.stringify(user))
+      blogService.setToken(user.token)
       this.setState({ username: '', password: '', user })
     } catch (exception) {
       this.setState({
@@ -35,6 +37,13 @@ class App extends React.Component {
     }
   }
 
+  logout = async (event) => {
+    event.preventDefault()
+    window.localStorage.removeItem('loggedInBlogUser')
+    blogService.setToken(null)
+    this.setState({ username: '', password: '', user: null })
+  }
+
   handleLoginFieldChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
   }
@@ -43,6 +52,14 @@ class App extends React.Component {
     blogService.getAll().then(blogs =>
       this.setState({ blogs })
     )
+
+    const loggedUserJSON = window.localStorage.getItem('loggedInBlogUser')
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON)
+      this.setState({ user })
+      blogService.setToken(user.token)
+    }
+
   }
 
   render() {
@@ -53,7 +70,9 @@ class App extends React.Component {
             password={this.state.password}
             loginHandler={this.login}
             fieldChangeHandler={this.handleLoginFieldChange} /> :
-          <BlogForm user={this.state.user.name} blogs={this.state.blogs} />
+          <BlogList user={this.state.user.name}
+            blogs={this.state.blogs}
+            logoutHandler={this.logout} />
         }
       </div>
     );
