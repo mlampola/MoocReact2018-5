@@ -4,19 +4,20 @@ import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import './index.css'
 
 class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
       blogs: [],
-      error: null,
       username: '',
       password: '',
       user: null,
       title: '',
       author: '',
-      url: ''
+      url: '',
+      message: null
     }
   }
 
@@ -33,10 +34,10 @@ class App extends React.Component {
       this.setState({ username: '', password: '', user })
     } catch (exception) {
       this.setState({
-        error: 'käyttäjätunnus tai salasana virheellinen',
+        message: 'Wrong username or password',
       })
       setTimeout(() => {
-        this.setState({ error: null })
+        this.setState({ message: null })
       }, 5000)
     }
   }
@@ -58,8 +59,12 @@ class App extends React.Component {
 
     if (savedBlog) {
       this.setState({
-        blogs: this.state.blogs.concat(savedBlog)
+        blogs: this.state.blogs.concat(savedBlog),
+        message: `A new blog '${savedBlog.title}' by ${savedBlog.author} added`,
       })
+      setTimeout(() => {
+        this.setState({ message: null })
+      }, 5000)
     }
 
     this.setState({
@@ -98,7 +103,8 @@ class App extends React.Component {
           <LoginForm username={this.state.username}
             password={this.state.password}
             loginHandler={this.login}
-            fieldChangeHandler={this.handleLoginFieldChange} />
+            fieldChangeHandler={this.handleLoginFieldChange}
+            message={this.state.message} />
           :
           <div>
             <BlogForm user={this.state.user.name}
@@ -109,7 +115,8 @@ class App extends React.Component {
               }}
               submitHandler={this.addBlog}
               fieldChangeHandler={this.handleBlogFieldChange}
-              logoutHandler={this.logout} />
+              logoutHandler={this.logout}
+              message={this.state.message} />
             <p></p>
             <BlogList blogs={this.state.blogs} />
           </div>
