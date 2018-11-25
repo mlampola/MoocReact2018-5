@@ -1,6 +1,7 @@
 import React from 'react'
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
+import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -12,7 +13,10 @@ class App extends React.Component {
       error: null,
       username: '',
       password: '',
-      user: null
+      user: null,
+      title: '',
+      author: '',
+      url: ''
     }
   }
 
@@ -44,14 +48,39 @@ class App extends React.Component {
     this.setState({ username: '', password: '', user: null })
   }
 
+  addBlog = async (event) => {
+    event.preventDefault()
+    const savedBlog = await blogService.create({
+      title: this.state.title,
+      author: this.state.author,
+      url: this.state.url
+    })
+
+    if (savedBlog) {
+      this.setState({
+        blogs: this.state.blogs.concat(savedBlog)
+      })
+    }
+
+    this.setState({
+      title: '',
+      author: '',
+      url: ''
+    })
+
+  }
+
   handleLoginFieldChange = (event) => {
     this.setState({ [event.target.name]: event.target.value })
   }
 
-  componentDidMount() {
-    blogService.getAll().then(blogs =>
-      this.setState({ blogs })
-    )
+  handleBlogFieldChange = (event) => {
+    this.setState({ [event.target.name]: event.target.value })
+  }
+
+  async componentDidMount() {
+    const blogs = await blogService.getAll()
+    this.setState({ blogs })
 
     const loggedUserJSON = window.localStorage.getItem('loggedInBlogUser')
     if (loggedUserJSON) {
@@ -69,13 +98,24 @@ class App extends React.Component {
           <LoginForm username={this.state.username}
             password={this.state.password}
             loginHandler={this.login}
-            fieldChangeHandler={this.handleLoginFieldChange} /> :
-          <BlogList user={this.state.user.name}
-            blogs={this.state.blogs}
-            logoutHandler={this.logout} />
+            fieldChangeHandler={this.handleLoginFieldChange} />
+          :
+          <div>
+            <BlogForm user={this.state.user.name}
+              blog={{
+                title: this.state.title,
+                author: this.state.author,
+                url: this.state.url
+              }}
+              submitHandler={this.addBlog}
+              fieldChangeHandler={this.handleBlogFieldChange}
+              logoutHandler={this.logout} />
+            <p></p>
+            <BlogList blogs={this.state.blogs} />
+          </div>
         }
       </div>
-    );
+    )
   }
 }
 
