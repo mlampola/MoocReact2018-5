@@ -3,6 +3,7 @@ import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
 import Togglable from './components/Togglable'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import './index.css'
@@ -18,7 +19,8 @@ class App extends React.Component {
       title: '',
       author: '',
       url: '',
-      message: null
+      message: null,
+      error: null
     }
   }
 
@@ -35,10 +37,10 @@ class App extends React.Component {
       this.setState({ username: '', password: '', user })
     } catch (exception) {
       this.setState({
-        message: 'Wrong username or password',
+        error: 'Wrong username or password',
       })
       setTimeout(() => {
-        this.setState({ message: null })
+        this.setState({ error: null })
       }, 5000)
     }
   }
@@ -55,7 +57,7 @@ class App extends React.Component {
     if (blog) {
       blog.likes = blog.likes + 1
       const updatedBlog = await blogService.update(blog)
-      this.setState({ blogs: this.state.blogs.map(blog => blog.id === updatedBlog.id ? updatedBlog : blog)})
+      this.setState({ blogs: this.state.blogs.map(blog => blog.id === updatedBlog.id ? updatedBlog : blog) })
       console.log(updatedBlog)
     }
   }
@@ -83,7 +85,30 @@ class App extends React.Component {
       author: '',
       url: ''
     })
+  }
 
+  deleteBlog = async (event) => {
+    const blog = await blogService.getById(event.target.id)
+    if (blog) {
+      blog.likes = blog.likes + 1
+
+      try {
+        if (window.confirm(`Delete '${blog.title}' by ${blog.author}?`)) {
+          await blogService.remove(blog)
+          this.setState({ blogs: this.state.blogs.filter(b => b.id !== blog.id) })
+          console.log('Deleted: ', blog)
+        }
+      }
+      catch (error) {
+        console.log('Delete failed : ', error)
+        this.setState({
+          error: error
+        })
+        setTimeout(() => {
+          this.setState({ error: null })
+        }, 5000)
+      }
+    }
   }
 
   handleLoginFieldChange = (event) => {
@@ -115,13 +140,14 @@ class App extends React.Component {
             password={this.state.password}
             loginHandler={this.login}
             fieldChangeHandler={this.handleLoginFieldChange}
-            message={this.state.message} />
+            message={this.state.error} />
           :
           <div>
             <h2>Blogs</h2>
             <p>{this.state.user.name} logged in &nbsp;
               <button onClick={this.logout}>Logout</button>
             </p>
+            <Notification message={this.state.error} style='error' />
             <Togglable buttonLabel="Create new...">
               <BlogForm blog={{
                 title: this.state.title,
@@ -133,7 +159,7 @@ class App extends React.Component {
                 message={this.state.message} />
             </Togglable>
             <p></p>
-            <BlogList blogs={this.state.blogs} likeHandler={this.like} />
+            <BlogList blogs={this.state.blogs} likeHandler={this.like} deleteHandler={this.deleteBlog} />
           </div>
         }
       </div>

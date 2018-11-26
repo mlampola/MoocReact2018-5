@@ -27,7 +27,7 @@ const create = async (newBlog) => {
     return response.data
   }
   catch (exception) {
-    console.log('Blog service:', exception)
+    console.log('Post blog: ', exception)
   }
 }
 
@@ -38,20 +38,40 @@ const update = async (updatedBlog) => {
 
   const blog =
   {
-    user: updatedBlog.user._id,
     likes: updatedBlog.likes,
     author: updatedBlog.author,
     title: updatedBlog.title,
     url: updatedBlog.url
   }
 
+  if (updatedBlog.user) {
+    blog.user = updatedBlog.user._id
+  }
+
+  console.log('Update blog: ', blog)
   try {
     const response = await axios.put(baseUrl + '/' + updatedBlog.id, blog, config)
     return response.data
   }
   catch (exception) {
-    console.log('Blog service:', exception)
+    console.log('Update blog: ', exception)
   }
 }
 
-export default { setToken, getAll, getById, create, update }
+const remove = async (blog) => {
+  const config = {
+    headers: { 'Authorization': token }
+  }
+
+  try {
+    const response = await axios.delete(baseUrl + '/' + blog.id, config)
+    console.log(response)
+    return response.data
+  }
+  catch (exception) {
+    console.log('Delete blog: ', exception)
+    throw 'Unauthorized'
+  }
+}
+
+export default { setToken, getAll, getById, create, update, remove }
