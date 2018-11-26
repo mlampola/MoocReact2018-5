@@ -50,6 +50,16 @@ class App extends React.Component {
     this.setState({ username: '', password: '', user: null })
   }
 
+  like = async (event) => {
+    const blog = await blogService.getById(event.target.id)
+    if (blog) {
+      blog.likes = blog.likes + 1
+      const updatedBlog = await blogService.update(blog)
+      this.setState({ blogs: this.state.blogs.map(blog => blog.id === updatedBlog.id ? updatedBlog : blog)})
+      console.log(updatedBlog)
+    }
+  }
+
   addBlog = async (event) => {
     event.preventDefault()
     const savedBlog = await blogService.create({
@@ -114,16 +124,16 @@ class App extends React.Component {
             </p>
             <Togglable buttonLabel="Create new...">
               <BlogForm blog={{
-                  title: this.state.title,
-                  author: this.state.author,
-                  url: this.state.url
-                }}
+                title: this.state.title,
+                author: this.state.author,
+                url: this.state.url
+              }}
                 submitHandler={this.addBlog}
                 fieldChangeHandler={this.handleBlogFieldChange}
                 message={this.state.message} />
             </Togglable>
             <p></p>
-            <BlogList blogs={this.state.blogs} />
+            <BlogList blogs={this.state.blogs} likeHandler={this.like} />
           </div>
         }
       </div>

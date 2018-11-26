@@ -1,7 +1,7 @@
 import React from 'react'
 import TogglableItem from './TogglableItem'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, likeHandler }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -17,7 +17,7 @@ const Blog = ({ blog }) => {
           <tbody>
             <tr><td width="10"></td><td><a href={blog.url}>{blog.url}</a></td></tr>
             <tr><td></td><td>{blog.likes} likes &nbsp;
-            <button>Like</button>
+            <button  id={blog.id} onClick={likeHandler}>Like</button>
             </td></tr>
             <tr><td></td><td>added by {blog.user.name}</td></tr>
           </tbody>
