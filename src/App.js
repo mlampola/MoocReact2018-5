@@ -2,6 +2,7 @@ import React from 'react'
 import LoginForm from './components/LoginForm'
 import BlogList from './components/BlogList'
 import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import './index.css'
@@ -107,16 +108,20 @@ class App extends React.Component {
             message={this.state.message} />
           :
           <div>
-            <BlogForm user={this.state.user.name}
-              blog={{
-                title: this.state.title,
-                author: this.state.author,
-                url: this.state.url
-              }}
-              submitHandler={this.addBlog}
-              fieldChangeHandler={this.handleBlogFieldChange}
-              logoutHandler={this.logout}
-              message={this.state.message} />
+            <h2>Blogs</h2>
+            <p>{this.state.user.name} logged in &nbsp;
+              <button onClick={this.logout}>Logout</button>
+            </p>
+            <Togglable buttonLabel="Create new...">
+              <BlogForm blog={{
+                  title: this.state.title,
+                  author: this.state.author,
+                  url: this.state.url
+                }}
+                submitHandler={this.addBlog}
+                fieldChangeHandler={this.handleBlogFieldChange}
+                message={this.state.message} />
+            </Togglable>
             <p></p>
             <BlogList blogs={this.state.blogs} />
           </div>

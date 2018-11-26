@@ -1,12 +1,8 @@
 import React from 'react'
 import Notification from './Notification'
 
-const BlogForm = ({ user, blog, submitHandler, fieldChangeHandler, logoutHandler, message }) => (
+const BlogForm = ({ blog, submitHandler, fieldChangeHandler, message }) => (
   <div>
-    <h2>Blogs</h2>
-    <p>{user} logged in &nbsp;
-          <button onClick={logoutHandler}>Logout</button>
-    </p>
     <h2>Create new</h2>
     <Notification message={message} style='message' />
 
