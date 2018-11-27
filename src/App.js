@@ -159,7 +159,10 @@ class App extends React.Component {
                 message={this.state.message} />
             </Togglable>
             <p></p>
-            <BlogList blogs={this.state.blogs} likeHandler={this.like} deleteHandler={this.deleteBlog} />
+            <BlogList blogs={this.state.blogs}
+              likeHandler={this.like}
+              deleteHandler={this.deleteBlog}
+              loggedInUser={this.state.user} />
           </div>
         }
       </div>
