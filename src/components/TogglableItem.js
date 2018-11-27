@@ -22,10 +22,10 @@ class TogglableItem extends React.Component {
 
     return (
       <div>
-        <div onClick={this.toggleVisibility}>
+        <div onClick={this.toggleVisibility}  className="clickable">
           {this.props.clickableText}
         </div>
-        <div style={showWhenVisible}>
+        <div style={showWhenVisible} className="details">
           {this.props.children}
         </div>
       </div >
