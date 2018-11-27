@@ -48,7 +48,6 @@ const update = async (updatedBlog) => {
     blog.user = updatedBlog.user._id
   }
 
-  console.log('Update blog: ', blog)
   try {
     const response = await axios.put(baseUrl + '/' + updatedBlog.id, blog, config)
     return response.data
