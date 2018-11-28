@@ -6,7 +6,7 @@ const LoginForm = ({ username, password, loginHandler, fieldChangeHandler, messa
   return (
     <div>
       <h2>Log in to application</h2>
-      <Notification message={message} style='error' />
+      <Notification message={message} messageStyle='error' />
 
       <form onSubmit={loginHandler}>
         <div>

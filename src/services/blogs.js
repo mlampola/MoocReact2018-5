@@ -69,7 +69,7 @@ const remove = async (blog) => {
   }
   catch (exception) {
     console.log('Delete blog: ', exception)
-    throw 'Unauthorized'
+    throw new Error('Unauthorized')
   }
 }
 

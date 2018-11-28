@@ -102,7 +102,7 @@ class App extends React.Component {
       catch (error) {
         console.log('Delete failed : ', error)
         this.setState({
-          error: error
+          error: error.message
         })
         setTimeout(() => {
           this.setState({ error: null })
@@ -149,7 +149,7 @@ class App extends React.Component {
             <p>{this.state.user.name} logged in &nbsp;
               <button onClick={this.logout}>Logout</button>
             </p>
-            <Notification message={this.state.error} style='error' />
+            <Notification message={this.state.error} messageStyle='error' />
             <Togglable buttonLabel="Create new...">
               <BlogForm blog={{
                 title: this.state.title,
