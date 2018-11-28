@@ -136,13 +136,15 @@ class App extends React.Component {
     return (
       <div>
         {this.state.user === null ?
-          <LoginForm username={this.state.username}
-            password={this.state.password}
-            loginHandler={this.login}
-            fieldChangeHandler={this.handleLoginFieldChange}
-            message={this.state.error} />
+          <div className="login">
+            <LoginForm username={this.state.username}
+              password={this.state.password}
+              loginHandler={this.login}
+              fieldChangeHandler={this.handleLoginFieldChange}
+              message={this.state.error} />
+          </div>
           :
-          <div>
+          <div className="blogs">
             <h2>Blogs</h2>
             <p>{this.state.user.name} logged in &nbsp;
               <button onClick={this.logout}>Logout</button>
