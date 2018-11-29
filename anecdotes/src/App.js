@@ -1,19 +1,18 @@
 import React from 'react';
-
-const actionFor = {
-  voting(id) {
-    return {
-      type: 'VOTE',
-      data: { id }
-    }
-  }
-}
+import { anecdoteActionFor } from './reducer'
 
 class App extends React.Component {
   vote = (id) => () => {
     this.props.store.dispatch(
-      actionFor.voting(id)
+      anecdoteActionFor.voting(id)
     )
+  }
+
+  addAnecdote = (event) => {
+    event.preventDefault()
+    const anecdote = event.target.anecdote.value
+    this.props.store.dispatch(anecdoteActionFor.adding(anecdote))
+    event.target.anecdote.value = ''
   }
 
   render() {
@@ -33,8 +32,8 @@ class App extends React.Component {
           </div>
         )}
         <h2>create new</h2>
-        <form>
-          <div><input /></div>
+        <form onSubmit={this.addAnecdote}>
+          <div><input name="anecdote" /></div>
           <button>create</button>
         </form>
       </div>
